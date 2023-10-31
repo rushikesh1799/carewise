@@ -13,6 +13,20 @@ const Navbar = () => {
             <Link to="/hospital" className="nav_links">
                 Hospital
             </Link>
+            <a
+                href="https://github.com/rushikesh1799/carewise"
+                className="nav_links"
+                target="_blank"
+            >
+                github
+            </a>
+            <a
+                href="https://replit.com/@RushikeshBunge1/PatientSync-backend-API#index.js"
+                className="nav_links"
+                target="_blank"
+            >
+                replit
+            </a>
         </nav>
     );
 };
