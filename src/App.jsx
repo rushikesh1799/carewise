@@ -8,6 +8,8 @@ import WardsList from "./Pages/Ward/WardsList";
 import HospitalDetails from "./Pages/Hospital/HospitalDetails";
 import Navbar from "./Pages/Navbar/Navbar";
 import { fetchWards } from "./Features/Ward/WardSlice";
+import PatientDetails from "./Pages/Patient/PatientDetails";
+import WardDetails from "./Pages/Ward/WardDetails";
 
 function App() {
     const dispatch = useDispatch();
@@ -25,6 +27,14 @@ function App() {
                 <Route path="/" element={<Home />}></Route>
                 <Route path="/wards" element={<WardsList />}></Route>
                 <Route path="/hospital" element={<HospitalDetails />}></Route>
+                <Route
+                    path="/patient-details/:patientId"
+                    element={<PatientDetails />}
+                ></Route>
+                <Route
+                    path="/ward-details/:wardId"
+                    element={<WardDetails />}
+                ></Route>
             </Routes>
         </div>
     );
