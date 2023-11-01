@@ -1,15 +1,17 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
+import { fetchWards } from "../../Features/Ward/WardSlice";
 
 const WardsList = () => {
     const wardState = useSelector((state) => state.ward);
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(wardState);
-    }, []);
+        dispatch(fetchWards());
+    }, [dispatch]);
 
     return (
         <div>
