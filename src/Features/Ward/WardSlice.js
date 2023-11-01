@@ -5,7 +5,6 @@ export const fetchWards = createAsyncThunk("wards/fetchWard", async () => {
     const response = await axios.get(
         "https://patientsync-backend-api.rushikeshbunge1.repl.co/ward" // Assuming you have a Ward API
     );
-    console.log(response);
     if (response.status === 201) {
         return response.data.wards;
     }
@@ -55,14 +54,13 @@ export const deleteWard = createAsyncThunk("wards/deleteWard", async (id) => {
     );
 
     if (response.status === 201) {
-        return response.data.data;
+        return response.data.deletedWard;
     }
 });
 
 export const addPatientToWard = createAsyncThunk(
     "wards/addPatientToWard",
     async ({ id, patient }) => {
-        console.log("worked", id, patient);
         const response = await axios.post(
             `https://patientsync-backend-api.rushikeshbunge1.repl.co/ward/${id}/patient`,
             patient
@@ -95,6 +93,19 @@ export const wardSlice = createSlice({
                 state.wards = action.payload;
             })
             .addCase(fetchWards.rejected, (state, action) => {
+                state.status = "idle";
+                state.error = action.error.message;
+            })
+            .addCase(deleteWard.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(deleteWard.fulfilled, (state, action) => {
+                state.status = "success";
+                state.wards = state.wards.filter(
+                    (ward) => ward._id !== action.payload._id
+                );
+            })
+            .addCase(deleteWard.rejected, (state, action) => {
                 state.status = "idle";
                 state.error = action.error.message;
             });

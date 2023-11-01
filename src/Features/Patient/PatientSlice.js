@@ -39,12 +39,12 @@ export const addPatient = createAsyncThunk(
         if (response.status === 201) {
             dispatch(
                 addPatientToWard({
-                    id: response.data.data.assignedWardId,
-                    patient: response.data.data,
+                    id: response.data.patient.assignedWardId,
+                    patient: response.data.patient,
                 })
             );
-            return response.data.data;
         }
+        return response.data.patient;
     }
 );
 
@@ -76,8 +76,8 @@ export const deletePatient = createAsyncThunk(
             `https://patientsync-backend-api.rushikeshbunge1.repl.co/patient/${id}`
         );
 
-        if (response.status === 200) {
-            return response.data.data;
+        if (response.status === 201) {
+            return response.data.deletedPatient;
         }
     }
 );
@@ -85,6 +85,7 @@ export const deletePatient = createAsyncThunk(
 const initialState = {
     patients: [],
     patientDetails: {},
+    selectedOption: "",
     status: "idle",
     error: null,
 };
@@ -92,7 +93,11 @@ const initialState = {
 export const patientSlice = createSlice({
     name: "patients",
     initialState,
-    reducers: {},
+    reducers: {
+        setSelectedOption(state, action) {
+            state.selectedOption = action.payload;
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchPatients.pending, (state) => {
@@ -116,8 +121,34 @@ export const patientSlice = createSlice({
             .addCase(fetchPatientDetails.rejected, (state, action) => {
                 state.status = "idle";
                 state.error = action.error.message;
+            })
+            .addCase(addPatient.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(addPatient.fulfilled, (state, action) => {
+                state.status = "success";
+                state.patients.push(action.payload);
+            })
+            .addCase(addPatient.rejected, (state, action) => {
+                state.status = "idle";
+                state.error = action.error.message;
+            })
+            .addCase(deletePatient.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(deletePatient.fulfilled, (state, action) => {
+                state.status = "success";
+                state.patients = state.patients.filter(
+                    (patient) => patient._id !== action.payload._id
+                );
+            })
+            .addCase(deletePatient.rejected, (state, action) => {
+                state.status = "idle";
+                state.error = action.error.message;
             });
     },
 });
+
+export const { setSelectedOption } = patientSlice.actions;
 
 export default patientSlice.reducer;
